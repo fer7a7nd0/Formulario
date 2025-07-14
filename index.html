@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Inventario</title>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: #f4f7fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  h2 {
+    margin-top: 32px;
+    color: #2d3748;
+    font-size: 1.45rem;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    font-family: inherit;
+  }
+  form {
+    background: #fafdff;
+    padding: 22px 16px 18px 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(60, 120, 180, 0.07);
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-top: 18px;
+    border: 1px solid #e3e8f0;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    color: #374151;
+    gap: 3px;
+    margin-bottom: 1px;
+    font-weight: 500;
+    font-family: inherit;
+  }
+  input[type="text"],
+  input[type="number"],
+  select {
+    padding: 9px 11px;
+    border: 1px solid #cfd8e3;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f4f7fa;
+    transition: border 0.18s;
+    color: #2d3748;
+    font-weight: 400;
+    font-family: inherit;
+    margin-bottom: 10px;
+  }
+  input:focus, select:focus {
+    border-color: #7bb0e7;
+    outline: none;
+    background: #fff;
+  }
+  input[readonly] {
+    background: #e9eef5 !important;
+    color: #8a99b3;
+  }
+  button[type="submit"],
+  button[type="button"] {
+    background: #e6f0fa;
+    color: #2d3748;
+    border: 1px solid #cfd8e3;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s, border 0.18s;
+    margin-top: 7px;
+    font-family: inherit;
+  }
+  button[type="submit"] {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    margin-top: 7px;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background 0.18s, box-shadow 0.18s;
+  }
+  button[type="submit"]:hover {
+    background: #1746a2;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.13);
+  }
+  button[type="button"]:hover {
+    background: #f0f6fb;
+    border-color: #b6c6db;
+  }
+  #btnEnviar {
+    background: #a3e3c6;
+    color: #22694d;
+    border: none;
+    margin-top: 7px;
+    font-family: inherit;
+  }
+  #btnEnviar:hover {
+    background: #7fd6b2;
+  }
+  #btnLimpiar {
+    background: #f7e9e9;
+    color: #a13d3d;
+    border: none;
+    font-family: inherit;
+  }
+  #btnLimpiar:hover {
+    background: #f3cccc;
+  }
+  #mensaje {
+    margin-top: 16px;
+    color: #5393d6;
+    font-size: 1.05rem;
+    text-align: center;
+    min-height: 22px;
+    font-weight: 500;
+    font-family: inherit;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fafdff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(60, 120, 180, 0.07);
+    font-size: 0.97rem;
+    margin-top: 18px;
+    border: 1px solid #e3e8f0;
+    overflow: hidden;
+    font-family: inherit;
+  }
+  thead tr {
+    background: #e6f0fa;
+    color: #2d3748;
+    font-weight: 600;
+    font-family: inherit;
+  }
+  th, td {
+    padding: 8px 6px;
+    border-bottom: 1px solid #e3e8f0;
+    text-align: left;
+    font-family: inherit;
+  }
+  th:last-child, td:last-child {
+    border-right: none;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  @media (max-width: 480px) {
+    form {
+      padding: 12px 2px 10px 2px;
+      max-width: 98vw;
+    }
+    h2 {
+      font-size: 1.1rem;
+    }
+    table {
+      font-size: 0.93rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <form id="registroForm" autocomplete="off">
+    <h2 style="margin:0 0 18px 0;text-align:center;font-size:1.25rem;font-weight:600;color:#222;letter-spacing:0.5px;">Registro de Inventario</h2>
+    <label>Nombre
+      <input type="text" name="nombre" required placeholder="Nombre completo" autocomplete="off">
+    </label>
+    <label>Área
+      <select name="area" required id="areaInput">
+        <option value="">Seleccione área</option>
+        <option value="O2 Med.">O2 Med.</option>
+        <option value="Ar Ind.">Ar Ind.</option>
+        <option value="Ar Esp.">Ar Esp.</option>
+        <option value="N2 Ind.">N2 Ind.</option>
+        <option value="N2 Esp.">N2 Esp.</option>
+        <option value="O2 Ind.">O2 Ind.</option>
+        <option value="Co2 Ind.">Co2 Ind.</option>
+      </select>
+    </label>
+    <label>Código
+      <input type="text" name="codigo" required id="codigoInput" placeholder="Escriba o seleccione código" list="listaCodigos" autocomplete="off" disabled>
+      <datalist id="listaCodigos"></datalist>
+    </label>
+    <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:1px;">
+      <input type="text" name="producto" required placeholder="Producto" id="productoInput" readonly style="background:#e9ecef;" disabled>
+    </div>
+    <label>Cilindros
+      <input type="number" name="cilindros" required min="0" placeholder="Cantidad de cilindros" disabled>
+    </label>
+    <button type="button" id="btnLimpiar" style="background:#e0e0e0;color:#333;margin-top:8px;">Limpiar</button>
+    <button type="submit">Registrar</button>
+  </form>
+  <p id="mensaje"></p>
+  <div style="width:100%;max-width:370px;margin:0 auto;overflow-x:auto;">
+    <table id="tablaRegistros" style="width:100%;border-collapse:collapse;margin-top:18px;background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.04);font-size:0.97rem;">
+      <thead>
+        <tr style="background:#f1f3f6;color:#222;">
+          <!-- <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Fecha y Hora</th> -->
+          <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Código</th>
+          <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Producto</th>
+          <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Cilindros</th>
+          <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0; text-align:center;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div style="width:100%;max-width:370px;margin:0 auto;">
+    <button type="button" id="btnEnviar" style="background:#28a745;color:#fff;width:100%;margin-top:10px;">Enviar</button>
+  </div>
+
+  <script>
+    // Mapeo de códigos a descripciones
+    const codigoDescripcion = {
+      "433": "BIOXIDO DE CARBONO CON SIFON",
+      "443": "CO2 USP",
+      "445": "BIOXIDO DE CARBONO GASEOSO GRADO USP CIL C/SIFON",
+      "446": "CO2 (BIOXIDO DE CARBONO) CON SIFON 9 KGS",
+      "601": "OXIGENO MEDICINAL USP E",
+      "605": "BIOXIDO DE CARBONO USP (CO2-USP)",
+      "614": "CARGA DE OXIGENO GASEOSO INDUSTRIAL PORTATIL",
+      "630": "CARGA DE CO2 USP BT-20 2.0 KG",
+      "631": "CARGA DE CO2 USP BT-40",
+      "632": "CARGA DE CO2 USP BT-80",
+      "640": "CARGA DE CO2 USP D 1 KGS",
+      "641": "CO2 USP E VALVULA YUGO 2.0 KG",
+      "651": "CARGA DE OXIGENO MEDICINAL USP BT-20",
+      "652": "CARGA DE OXIGENO MEDICINAL USP BT-40",
+      "653": "CARGA DE OXIGENO MEDICINAL USP BT-80",
+      "654": "CARGA DE OXIGENO MEDICINAL USP M",
+      "655": "CARGA DE OXIGENO MEDICINAL USP E TODO EN UNO",
+      "658": "OXIGENO MEDICINAL USP \" E \"  DE 0.682 M3",
+      "659": "OXIGENO MEDICINAL USP \" M \" DE 3.45 M3",
+      "701": "CARGA DE OXIGENO 1 M3",
+      "702": "CARGA DE OXIGENO 1.5 M3",
+      "703": "CARGA DE OXIGENO 2.0 M3",
+      "704": "CARGA DE OXIGENO INDUSTRIAL DE 3 M3",
+      "760": "CARGA DE CO2 1 KGS.",
+      "761": "CARGA DE CO2 2 KGS.",
+      "762": "CARGA DE CO2 4 KGS.",
+      "766": "CILINDRO CO2 KOF 20 L.",
+      "801": "RECARGA DE OXIGENO MEDICINAL DE 247 LTS.",
+      "802": "RECARGA DE OXIGENO MEDICINAL DE 415 LTS.",
+      "803": "RECARGA DE OXIGENO MEDICINAL DE 682 LTS.",
+      "805": "RECARGA DE OXIGENO MEDICINAL DE 1725 LTS.",
+      "809": "RECARGA DE OXIGENO MEDICINAL DE 3450 LTS.",
+      "811": "CARGA DE RECARGA DE OXIGENO INFRALIFE .172 LTS",
+      "32159": "OXIGENO CORTE LASER",
+      "32160": "OXIGENO EXTRA SECO",
+      "32170": "OXIGENO RESPIRABLE P/AVIACION",
+      "41674": "CARGA DE OXIGENO EXTRA SECO (CA.MIN.)",
+      "50967": "CARGA DE CO2 FG  9KG",
+      "51132": "CARGA DE SPARK LASER O2 ASISTENCIA CL",
+      "51384": "CARGA DE CO2 FG C.M.",
+      "51400": "SPARK LASER O2 ASISTENCIA CL-M",
+      "51581": "CARGA DE CO2 BEBIDAS",
+      "51662": "CARGA DE CO2 ICEE",
+      "51759": "CO2 GRADO ALIMENTICIO CON SIFON 9 KG",
+      "51797": "BIOXIDO DE CARBONO 45.36KG C/PH",
+      "51802": "CO2 FG 20 KGS",
+      "51807": "CO2 EXTRA SECO C/SIFON 25 KG",
+      "52014": "OXIGENO EXTRA SECO CILINDRO A",
+      "52787": "CARBO MIXX ( CO2 GRADO SOLDADURA )",
+      "52981": "R744 CIL 25 KG C/SIFON",
+      "53033": "SPARK LASER O2 ASISTENCIA PACK EN RACK DE 12 CILIN",
+      "53093": "OXIGENO INDUSTRIAL EN RACK  12 CILINDROS DE 9.5 M3",
+      "101030": "OXIGENO INDUSTRIAL 3.0 MTS",
+      "101060": "OXIGENO INDUSTRIAL 6 MTS",
+      "101095": "OXIGENO INDUSTRIAL 9.5",
+      "101113": "OXIGENO INDUSTRIAL 9.5 MTS",
+      "101114": "OXIGENO INDUSTRIAL 6 M3",
+      "101160": "OXIGENO INDUSTRIAL 6 M3 VALVULA CGA",
+      "101195": "OXIGENO INDUSTRIAL 9.5 M3 VALVULA CGA",
+      "201010": "OXIGENO MEDICINAL EN CIL. MCA INFRA 10 MTS",
+      "201030": "OXIGENO MEDICINAL EN CIL MCA INFRA 3 MTS",
+      "201060": "OXIGENO MEDICINAL EN CIL MCA INFRA 6 MTS",
+      "201085": "OXIGENO MEDICINAL EN CIL MCA INFRA 8.5 MTS",
+      "201095": "OXIGENO MEDICINAL EN CIL MCA INFRA 9.5 MTS",
+      "431008": "CO2 INDUSTRIAL 8 KGS",
+      "431009": "CO2 INDUSTRIAL 9 KGS",
+      "431010": "CO2 10 KG",
+      "431012": "CO2 INDUSTRIAL 12 KGS",
+      "431015": "CO2 INDUSTRIAL 15 KGS",
+      "431016": "CO2 INDUSTRIAL 16 KGS",
+      "431020": "CO2 INDUSTRIAL 20 KG",
+      "431022": "CO2 INDUSTRIAL 22 KGS",
+      "431025": "CO2 INDUSTRIAL 25 KGS",
+      "431030": "CO2 INDUSTRIAL 30 KGS",
+      "431045": "CO2 INDUSTRIAL 45 KG"
+    };
+    const registros = [];
+    let editandoIndice = null;
+    // Poblar el datalist de códigos
+    const areaInput = document.getElementById('areaInput');
+    const codigoInput = document.getElementById('codigoInput');
+    const productoInput = document.getElementById('productoInput');
+    const cilindrosInput = document.querySelector('input[name="cilindros"]');
+    const datalist = document.getElementById('listaCodigos');
+    Object.entries(codigoDescripcion).forEach(([codigo, descripcion]) => {
+      const option = document.createElement('option');
+      option.value = codigo;
+      option.label = `${codigo} - ${descripcion}`;
+      datalist.appendChild(option);
+    });
+
+    // Habilitar/deshabilitar campos según área válida
+    const areaValida = [
+      "O2 Med.", "Ar Ind.", "Ar Esp.", "N2 Ind.", "N2 Esp.", "O2 Ind.", "Co2 Ind."
+    ];
+    areaInput.addEventListener('change', function() {
+      if (areaValida.includes(this.value)) {
+        codigoInput.disabled = false;
+      } else {
+        codigoInput.value = '';
+        productoInput.value = '';
+        cilindrosInput.value = '';
+        codigoInput.disabled = true;
+        productoInput.disabled = true;
+        cilindrosInput.disabled = true;
+      }
+    });
+
+    // Autocompletar producto y habilitar campos según código válido
+    codigoInput.addEventListener('input', function(e) {
+      const codigo = this.value.trim();
+      if (codigoDescripcion[codigo]) {
+        productoInput.value = codigoDescripcion[codigo];
+        productoInput.disabled = false;
+        cilindrosInput.disabled = false;
+        // Mover el foco al campo de cilindros automáticamente
+        cilindrosInput.focus();
+      } else {
+        productoInput.value = '';
+        productoInput.disabled = true;
+        cilindrosInput.value = '';
+        cilindrosInput.disabled = true;
+      }
+    });
+document.getElementById('registroForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const areaValida = [
+    "O2 Med.", "Ar Ind.", "Ar Esp.", "N2 Ind.", "N2 Esp.", "O2 Ind.", "Co2 Ind."
+  ];
+  const area = form.area.value;
+  const codigo = form.codigo.value.trim();
+  // Validar área
+  if (!areaValida.includes(area)) {
+    document.getElementById('mensaje').textContent = 'Seleccione un área válida.';
+    form.area.focus();
+    return;
+  }
+  // Validar código
+  if (!codigoDescripcion[codigo]) {
+    document.getElementById('mensaje').textContent = 'Ingrese un código válido.';
+    form.codigo.focus();
+    return;
+  }
+  const now = new Date();
+  const fecha = now.toLocaleDateString();
+  const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const data = {
+    fecha: fecha,
+    hora: hora,
+    nombre: form.nombre.value,
+    area: area,
+    codigo: codigo,
+    producto: form.producto.value,
+    cilindros: form.cilindros.value
+  };
+  if (editandoIndice !== null) {
+    // Actualizar registro existente
+    registros[editandoIndice] = data;
+    // Actualizar la tabla
+    const tbody = document.querySelector('#tablaRegistros tbody');
+    tbody.children[editandoIndice].children[0].textContent = data.fecha + ' ' + data.hora;
+    tbody.children[editandoIndice].children[1].textContent = data.codigo;
+    tbody.children[editandoIndice].children[2].textContent = data.producto;
+    tbody.children[editandoIndice].children[3].textContent = data.cilindros;
+    document.getElementById('mensaje').textContent = 'Registro actualizado.';
+    document.querySelector('button[type="submit"]').textContent = 'Registrar';
+    editandoIndice = null;
+  } else {
+    // Solo agregar a la tabla local y al array
+    registros.push(data);
+    agregarFilaTabla(data);
+    document.getElementById('mensaje').textContent = 'Registro guardado localmente.';
+  }
+  form.codigo.value = '';
+  form.cilindros.value = '';
+  form.producto.value = '';
+  form.codigo.focus();
+});
+
+    document.getElementById('btnEnviar').addEventListener('click', function() {
+      if (registros.length === 0) {
+        document.getElementById('mensaje').textContent = 'No hay registros para enviar.';
+        return;
+      }
+      let enviados = 0;
+      registros.forEach((data, idx) => {
+        // Si el registro no tiene fecha u hora, las agregamos antes de enviar
+        let registroEnviar = { ...data };
+        if (!registroEnviar.fecha || !registroEnviar.hora) {
+          const now = new Date();
+          registroEnviar.fecha = now.toLocaleDateString();
+          registroEnviar.hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        // Unir fecha y hora en un solo campo para Google Sheets
+        registroEnviar.fecha = registroEnviar.fecha + ' ' + registroEnviar.hora;
+        delete registroEnviar.hora;
+        fetch('https://script.google.com/macros/s/AKfycbzcNqr6YY8gtoUQ-4Hm8nfwP1B3FfJfi7QWWwOCdKn4sZGjOTuWfBIcvUb5ZLzkmhrRsg/exec', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registroEnviar)
+        });
+        enviados++;
+      });
+      document.getElementById('mensaje').textContent = 'Registros enviados (' + enviados + ').';
+      // Limpiar registros locales y la tabla tras el envío
+      registros.length = 0;
+      const tbody = document.querySelector('#tablaRegistros tbody');
+      tbody.innerHTML = '';
+    });
+
+    document.getElementById('btnLimpiar').addEventListener('click', function() {
+      const form = document.getElementById('registroForm');
+      form.nombre.value = '';
+      form.area.value = '';
+      form.codigo.value = '';
+      form.producto.value = '';
+      form.cilindros.value = '';
+      form.nombre.focus();
+      document.getElementById('mensaje').textContent = '';
+      document.querySelector('button[type="submit"]').textContent = 'Registrar';
+      editandoIndice = null;
+    });
+
+function agregarFilaTabla(data) {
+  const tbody = document.querySelector('#tablaRegistros tbody');
+  const fila = document.createElement('tr');
+  fila.innerHTML = `
+    <!-- <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.fecha} ${data.hora || ''}</td> -->
+    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.codigo}</td>
+    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.producto}</td>
+    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.cilindros}</td>
+    <td style="padding:6px 2px;border-bottom:1px solid #f0f0f0; text-align:center; white-space:nowrap;">
+      <button type="button" class="btnEditar" title="Editar" style="background:#f59e42;color:#fff;border:none;padding:2px 7px;font-size:0.92em;border-radius:3px;cursor:pointer;margin-right:3px;">✏️</button>
+      <button type="button" class="btnEliminar" title="Eliminar" style="background:#ef4444;color:#fff;border:none;padding:2px 7px;font-size:0.92em;border-radius:3px;cursor:pointer;">🗑️</button>
+    </td>
+  `;
+  // Botón Eliminar
+  fila.querySelector('.btnEliminar').addEventListener('click', function() {
+    const rowIndex = Array.from(tbody.children).indexOf(fila);
+    if (rowIndex > -1) {
+      registros.splice(rowIndex, 1);
+      fila.remove();
+      document.getElementById('mensaje').textContent = 'Registro eliminado.';
+    }
+  });
+  // Botón Editar
+  fila.querySelector('.btnEditar').addEventListener('click', function() {
+    const rowIndex = Array.from(tbody.children).indexOf(fila);
+    if (rowIndex > -1) {
+      const reg = registros[rowIndex];
+      const form = document.getElementById('registroForm');
+      form.nombre.value = reg.nombre;
+      form.area.value = reg.area;
+      // Disparar el evento para habilitar campos
+      form.area.dispatchEvent(new Event('change'));
+      setTimeout(() => {
+        form.codigo.value = reg.codigo;
+        form.codigo.dispatchEvent(new Event('input'));
+        form.producto.value = reg.producto;
+        form.cilindros.value = reg.cilindros;
+      }, 10);
+      editandoIndice = rowIndex;
+      document.querySelector('button[type="submit"]').textContent = 'Actualizar';
+      document.getElementById('mensaje').textContent = 'Editando registro. Modifique y presione Actualizar.';
+    }
+  });
+  tbody.appendChild(fila);
+}
+  </script>
+</body>
+</html>
