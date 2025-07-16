@@ -139,27 +139,34 @@
     max-width: unset;
     height: 48px;
     font-size: 1.08rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    align-self: center;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    transition: background 0.18s, box-shadow 0.18s;
   }
   #btnEnviar:hover {
     background: #7fd6b2;
   }
   #btnLimpiar {
-    background: #f7e9e9;
-    color: #c48a8a;
+    background: #e0e0e0;
+    color: #444;
     border: none;
     font-family: inherit;
-    font-size: 1.08rem;
-    padding: 10px 0;
-    min-width: 90px;
-    max-width: 140px;
-    width: 60%;
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
     height: 48px;
+    font-size: 1.08rem;
     font-weight: 600;
     letter-spacing: 0.5px;
     align-self: center;
+    margin-top: 7px;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    transition: background 0.18s, box-shadow 0.18s;
   }
   #btnLimpiar:hover {
-    background: #f3cccc;
+    background: #cccccc;
   }
   #mensaje {
     margin-top: 16px;
@@ -221,7 +228,8 @@
       <span style="vertical-align:middle;font-size:2em;margin-right:10px;">📝</span>Registro de Inventario
     </h2>
     <label>Nombre
-      <input type="text" name="nombre" required placeholder="Nombre completo" autocomplete="off">
+      <input type="text" name="nombre" required placeholder="Nombre completo" autocomplete="off" list="listaNombres">
+      <datalist id="listaNombres"></datalist>
     </label>
     <label>Área
       <select name="area" required id="areaInput">
@@ -247,18 +255,14 @@
       <input type="number" name="cilindros" required min="0" placeholder="Cantidad de cilindros" disabled inputmode="numeric" pattern="[0-9]*">
     </label>
     <div style="display:flex;justify-content:center;width:100%;margin-top:8px;">
-      <button type="button" id="btnLimpiar" style="background:#e0e0e0;color:#333;">Limpiar</button>
-    </div>
-    <div style="display:flex;justify-content:center;width:100%;margin-top:8px;">
       <button type="submit">Registrar</button>
     </div>
   </form>
-  <p id="mensaje"></p>
   <div style="width:100%;max-width:370px;margin:0 auto;overflow-x:auto;">
     <table id="tablaRegistros" style="width:100%;border-collapse:collapse;margin-top:18px;background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.04);font-size:0.97rem;">
       <thead>
         <tr style="background:#f1f3f6;color:#222;">
-          <!-- <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Fecha y Hora</th> -->
+          <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">ID</th>
           <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Código</th>
           <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Producto</th>
           <th style="padding:7px 4px;border-bottom:1px solid #e0e0e0;">Cilindros</th>
@@ -267,13 +271,66 @@
       </thead>
       <tbody></tbody>
     </table>
-  </div>
 
+  <p id="mensaje" style="margin-top:10px;"></p>
+  <p id="agradecimiento" style="margin-top:2px;color:#28a745;font-weight:600;text-align:center;"></p>
   <div style="width:100%;max-width:370px;margin:0 auto;display:flex;justify-content:center;">
     <button type="button" id="btnEnviar" style="background:#28a745;color:#fff;width:100%;margin-top:10px;">Enviar</button>
   </div>
+  <div style="width:100%;max-width:370px;margin:0 auto;display:flex;justify-content:center;">
+    <button type="button" id="btnLimpiar" style="background:#e0e0e0;color:#444;width:100%;height:48px;font-size:1.08rem;font-weight:600;letter-spacing:0.5px;align-self:center;margin-top:7px;box-shadow:0 2px 8px rgba(37,99,235,0.08);transition:background 0.18s,box-shadow 0.18s;border:none;">Limpiar</button>
+  </div>
 
   <script>
+    // Evitar avanzar si el nombre no es válido
+    const nombreInput = document.querySelector('input[name="nombre"]');
+    nombreInput.addEventListener('keydown', function(e) {
+      if ((e.key === 'Tab' || e.key === 'Enter') && !listaNombres.includes(nombreInput.value.trim())) {
+        e.preventDefault();
+        document.getElementById('mensaje').textContent = 'Ingrese un nombre válido de la lista.';
+        nombreInput.focus();
+      }
+    });
+    nombreInput.addEventListener('blur', function(e) {
+      if (!listaNombres.includes(nombreInput.value.trim())) {
+        document.getElementById('mensaje').textContent = 'Ingrese un nombre válido de la lista.';
+        setTimeout(() => nombreInput.focus(), 0);
+      } else {
+        document.getElementById('mensaje').textContent = '';
+      }
+    });
+    // Lista de nombres para autocompletar
+    const listaNombres = [
+      "Jose Rodelo",
+      "Humberto Huerta",
+      "Christian Molina",
+      "Fernando Moreno",
+      "Orlando Ibarra",
+      "Samai Acosta",
+      "Jorge Barrón",
+      "Daniel Hernández",
+      "Luis López",
+      "Francisco López",
+      "Gabriel Martinez",
+      "David Oliva",
+      "Jose Jasso",
+      "Francisco Mendoza",
+      "Heriberto Hernández",
+      "Edson Gonzalez",
+      "Edgar López",
+      "Misael Avilés",
+      "Jorge Tirado",
+      "Misael Palafox",
+      "Rodolfo Villarreal",
+      "Esto es una prueba"
+    ];
+    const datalistNombres = document.getElementById('listaNombres');
+    listaNombres.forEach(nombre => {
+      const option = document.createElement('option');
+      option.value = nombre;
+      datalistNombres.appendChild(option);
+    });
+
     // Nueva lista de códigos a descripciones
     const codigoDescripcion = {
       "122": "ARGON LIQUIDO EN DEWARS",
@@ -686,6 +743,12 @@
 document.getElementById('registroForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const form = e.target;
+  // Validar nombre
+  if (!listaNombres.includes(form.nombre.value.trim())) {
+    document.getElementById('mensaje').textContent = 'Ingrese un nombre válido de la lista.';
+    form.nombre.focus();
+    return;
+  }
   const areaValida = [
     "Oxígeno medicinal", "Argón", "Nitrógeno", "Oxígeno industrial", "Hidrógeno", "Gases especiales", "Co2", "Dewars"
   ];
@@ -718,11 +781,13 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
   if (editandoIndice !== null) {
     // Actualizar registro existente
     registros[editandoIndice] = data;
-    // Actualizar la tabla (solo Código, Producto, Cilindros)
+    // Actualizar la tabla (ID, Código, Producto, Cilindros)
     const tbody = document.querySelector('#tablaRegistros tbody');
-    tbody.children[editandoIndice].children[0].textContent = data.codigo;
-    tbody.children[editandoIndice].children[1].textContent = data.producto;
-    tbody.children[editandoIndice].children[2].textContent = data.cilindros;
+    const fila = tbody.children[editandoIndice];
+    fila.children[0].textContent = editandoIndice + 1; // ID
+    fila.children[1].textContent = data.codigo;
+    fila.children[2].textContent = data.producto;
+    fila.children[3].textContent = data.cilindros;
     document.getElementById('mensaje').textContent = 'Registro actualizado.';
     document.querySelector('button[type="submit"]').textContent = 'Registrar';
     editandoIndice = null;
@@ -731,6 +796,8 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
     registros.push(data);
     agregarFilaTabla(data);
     document.getElementById('mensaje').textContent = 'Registro guardado localmente.';
+    // El mensaje de agradecimiento solo aparecerá después de enviar los registros
+    document.getElementById('agradecimiento').textContent = '';
   }
   form.codigo.value = '';
   form.cilindros.value = '';
@@ -743,42 +810,56 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
         document.getElementById('mensaje').textContent = 'No hay registros para enviar.';
         return;
       }
+      const url = 'https://script.google.com/macros/s/AKfycbzcNqr6YY8gtoUQ-4Hm8nfwP1B3FfJfi7QWWwOCdKn4sZGjOTuWfBIcvUb5ZLzkmhrRsg/exec';
       let enviados = 0;
-      registros.forEach((data, idx) => {
-        // Si el registro no tiene fecha u hora, las agregamos antes de enviar
-        let registroEnviar = { ...data };
-        if (!registroEnviar.fecha || !registroEnviar.hora) {
-          const now = new Date();
-          registroEnviar.fecha = now.toLocaleDateString();
-          registroEnviar.hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      async function enviarConRetraso() {
+        for (let i = 0; i < registros.length; i++) {
+          let registroEnviar = { ...registros[i] };
+          if (!registroEnviar.fecha || !registroEnviar.hora) {
+            const now = new Date();
+            registroEnviar.fecha = now.toLocaleDateString();
+            registroEnviar.hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          }
+          registroEnviar.fecha = registroEnviar.fecha + ' ' + registroEnviar.hora;
+          delete registroEnviar.hora;
+          fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registroEnviar)
+          });
+          enviados++;
+          document.getElementById('mensaje').textContent = 'Enviando registro ' + enviados + ' de ' + registros.length + '...';
+          await new Promise(res => setTimeout(res, 1000));
         }
-        // Unir fecha y hora en un solo campo para Google Sheets
-        registroEnviar.fecha = registroEnviar.fecha + ' ' + registroEnviar.hora;
-        delete registroEnviar.hora;
-        fetch('https://script.google.com/macros/s/AKfycbzcNqr6YY8gtoUQ-4Hm8nfwP1B3FfJfi7QWWwOCdKn4sZGjOTuWfBIcvUb5ZLzkmhrRsg/exec', {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(registroEnviar)
-        });
-        enviados++;
-      });
-      document.getElementById('mensaje').textContent = 'Registros enviados (' + enviados + ').';
-      // Limpiar registros locales y la tabla tras el envío
-      registros.length = 0;
-      const tbody = document.querySelector('#tablaRegistros tbody');
-      tbody.innerHTML = '';
+        document.getElementById('mensaje').textContent = 'Registros enviados (' + enviados + ').';
+        // Mostrar mensaje de agradecimiento después de enviar
+        const nombre = (document.getElementById('registroForm').nombre.value || 'usuario');
+        document.getElementById('agradecimiento').textContent = '¡Gracias, ' + nombre + ', por tu colaboración!';
+        // Limpiar registros locales y la tabla tras el envío
+        registros.length = 0;
+        const tbody = document.querySelector('#tablaRegistros tbody');
+        tbody.innerHTML = '';
+      }
+      enviarConRetraso();
     });
 
     document.getElementById('btnLimpiar').addEventListener('click', function() {
       const form = document.getElementById('registroForm');
-      // No limpiar el campo nombre
+      // Limpiar todos los campos
+      form.nombre.value = '';
       form.area.value = '';
       form.codigo.value = '';
       form.producto.value = '';
       form.cilindros.value = '';
+      // Deshabilitar campos dependientes
+      document.getElementById('codigoInput').disabled = true;
+      document.getElementById('productoInput').disabled = true;
+      document.querySelector('input[name="cilindros"]').disabled = true;
+      // Posicionar el foco en el campo nombre
       form.nombre.focus();
       document.getElementById('mensaje').textContent = '';
+      document.getElementById('agradecimiento').textContent = '';
       document.querySelector('button[type="submit"]').textContent = 'Registrar';
       editandoIndice = null;
     });
@@ -786,8 +867,9 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
 function agregarFilaTabla(data) {
   const tbody = document.querySelector('#tablaRegistros tbody');
   const fila = document.createElement('tr');
+  const id = tbody.children.length + 1;
   fila.innerHTML = `
-    <!-- <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.fecha} ${data.hora || ''}</td> -->
+    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${id}</td>
     <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.codigo}</td>
     <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.producto}</td>
     <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.cilindros}</td>
@@ -803,6 +885,10 @@ function agregarFilaTabla(data) {
       registros.splice(rowIndex, 1);
       fila.remove();
       document.getElementById('mensaje').textContent = 'Registro eliminado.';
+      // Recalcular IDs
+      Array.from(tbody.children).forEach((tr, idx) => {
+        tr.children[0].textContent = idx + 1;
+      });
     }
   });
   // Botón Editar
