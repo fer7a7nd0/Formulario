@@ -825,7 +825,8 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
         document.getElementById('mensaje').textContent = 'No hay registros para enviar.';
         return;
       }
-      const url = 'https://script.google.com/macros/s/AKfycbzcNqr6YY8gtoUQ-4Hm8nfwP1B3FfJfi7QWWwOCdKn4sZGjOTuWfBIcvUb5ZLzkmhrRsg/exec';
+      const url1 = 'https://script.google.com/macros/s/AKfycbznrApZ2-RHLZ_1Sx5jaA0yJjQL8FdXSCaLdDEubo_7hocvB5CGcNHnzocLN-E_o_GhUQ/exec';
+      const url2 = 'https://script.google.com/macros/s/AKfycbw-x_4ybQCSbxxboO4mkZztuUY3wp035ZYL_I56v6tbC2LnCw8lojACyEBlsZAWr7lqNA/exec';
       let enviados = 0;
       async function enviarConRetraso() {
         for (let i = 0; i < registros.length; i++) {
@@ -835,13 +836,22 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
             registroEnviar.fecha = now.toLocaleDateString();
             registroEnviar.hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
           }
-          registroEnviar.fecha = registroEnviar.fecha + ' ' + registroEnviar.hora;
+          // Solo enviar la fecha, descartar la hora
           delete registroEnviar.hora;
-          fetch(url, {
+          // Enviar al primer archivo (con ID)
+          let registroConID = { ...registroEnviar, id: i + 1 };
+          fetch(url1, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(registroEnviar)
+            body: JSON.stringify(registroConID)
+          });
+          // Enviar al segundo archivo (con ID)
+          fetch(url2, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registroConID)
           });
           enviados++;
           document.getElementById('mensaje').textContent = 'Enviando registro ' + enviados + ' de ' + registros.length + '...';
