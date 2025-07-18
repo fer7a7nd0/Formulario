@@ -248,17 +248,8 @@
       <datalist id="listaNombres"></datalist>
     </label>
     <label>Área
-      <select name="area" required id="areaInput">
-        <option value="">Seleccione área</option>
-        <option value="Oxígeno medicinal">Oxígeno medicinal</option>
-        <option value="Argón">Argón</option>
-        <option value="Nitrógeno">Nitrógeno</option>
-        <option value="Oxígeno industrial">Oxígeno industrial</option>
-        <option value="Hidrógeno">Hidrógeno</option>
-        <option value="Gases especiales">Gases especiales</option>
-        <option value="Co2">Co2</option>
-        <option value="Dewars">Dewars</option>
-      </select>
+      <input type="text" name="area" required placeholder="Área" autocomplete="off" list="listaAreas" id="areaInput">
+      <datalist id="listaAreas"></datalist>
     </label>
     <label>Código
       <input type="text" name="codigo" required id="codigoInput" placeholder="Escriba o seleccione código" list="listaCodigos" autocomplete="off" disabled inputmode="numeric" pattern="[0-9]*">
@@ -297,8 +288,20 @@
   </div>
 
   <script>
-    // Evitar avanzar si el nombre no es válido
+    // Funcionalidad avanzada para Nombre igual que Código
     const nombreInput = document.querySelector('input[name="nombre"]');
+    const areaInput = document.getElementById('areaInput');
+    // Validación estricta y autocompletar para Nombre
+    nombreInput.addEventListener('input', function(e) {
+      const nombre = nombreInput.value.trim();
+      if (listaNombres.includes(nombre)) {
+        document.getElementById('mensaje').textContent = '';
+        // Pasar automáticamente al campo Área si el nombre es válido
+        setTimeout(() => areaInput.focus(), 0);
+      } else {
+        document.getElementById('mensaje').textContent = 'Ingrese un nombre válido de la lista.';
+      }
+    });
     nombreInput.addEventListener('keydown', function(e) {
       if ((e.key === 'Tab' || e.key === 'Enter') && !listaNombres.includes(nombreInput.value.trim())) {
         e.preventDefault();
@@ -314,6 +317,7 @@
         document.getElementById('mensaje').textContent = '';
       }
     });
+
     // Lista de nombres para autocompletar
     const listaNombres = [
       "Jose Rodelo",
@@ -344,6 +348,51 @@
       const option = document.createElement('option');
       option.value = nombre;
       datalistNombres.appendChild(option);
+    });
+
+    // Lista de áreas para autocompletar
+    const listaAreas = [
+      "Oxígeno medicinal",
+      "Argón",
+      "Nitrógeno",
+      "Oxígeno industrial",
+      "Hidrógeno",
+      "Gases especiales",
+      "Co2",
+      "Dewars"
+    ];
+    const datalistAreas = document.getElementById('listaAreas');
+    listaAreas.forEach(area => {
+      const option = document.createElement('option');
+      option.value = area;
+      datalistAreas.appendChild(option);
+    });
+
+    // Funcionalidad avanzada para Área igual que Código
+    areaInput.addEventListener('input', function(e) {
+      const area = areaInput.value.trim();
+      if (listaAreas.includes(area)) {
+        document.getElementById('mensaje').textContent = '';
+        // Pasar automáticamente al campo Código si el área es válida
+        setTimeout(() => codigoInput.focus(), 0);
+      } else {
+        document.getElementById('mensaje').textContent = 'Ingrese un área válida de la lista.';
+      }
+    });
+    areaInput.addEventListener('keydown', function(e) {
+      if ((e.key === 'Tab' || e.key === 'Enter') && !listaAreas.includes(areaInput.value.trim())) {
+        e.preventDefault();
+        document.getElementById('mensaje').textContent = 'Ingrese un área válida de la lista.';
+        areaInput.focus();
+      }
+    });
+    areaInput.addEventListener('blur', function(e) {
+      if (!listaAreas.includes(areaInput.value.trim())) {
+        document.getElementById('mensaje').textContent = 'Ingrese un área válida de la lista.';
+        setTimeout(() => areaInput.focus(), 0);
+      } else {
+        document.getElementById('mensaje').textContent = '';
+      }
     });
 
     // Nueva lista de códigos a descripciones
@@ -708,7 +757,7 @@
     const registros = [];
     let editandoIndice = null;
     // Poblar el datalist de códigos
-    const areaInput = document.getElementById('areaInput');
+    // const areaInput = document.getElementById('areaInput'); // Eliminada para evitar redeclaración
     const codigoInput = document.getElementById('codigoInput');
     const productoInput = document.getElementById('productoInput');
     const cilindrosInput = document.querySelector('input[name="cilindros"]');
@@ -721,11 +770,8 @@
     });
 
     // Habilitar/deshabilitar campos según área válida
-    const areaValida = [
-      "Oxígeno medicinal", "Argón", "Nitrógeno", "Oxígeno industrial", "Hidrógeno", "Gases especiales", "Co2", "Dewars"
-    ];
-    areaInput.addEventListener('change', function() {
-      if (areaValida.includes(this.value)) {
+    areaInput.addEventListener('input', function() {
+      if (listaAreas.includes(this.value.trim())) {
         codigoInput.disabled = false;
       } else {
         codigoInput.value = '';
@@ -764,17 +810,14 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
     form.nombre.focus();
     return;
   }
-  const areaValida = [
-    "Oxígeno medicinal", "Argón", "Nitrógeno", "Oxígeno industrial", "Hidrógeno", "Gases especiales", "Co2", "Dewars"
-  ];
-  const area = form.area.value;
-  const codigo = form.codigo.value.trim();
   // Validar área
-  if (!areaValida.includes(area)) {
-    document.getElementById('mensaje').textContent = 'Seleccione un área válida.';
+  if (!listaAreas.includes(form.area.value.trim())) {
+    document.getElementById('mensaje').textContent = 'Ingrese un área válida de la lista.';
     form.area.focus();
     return;
   }
+  const area = form.area.value.trim();
+  const codigo = form.codigo.value.trim();
   // Validar código
   if (!codigoDescripcion[codigo]) {
     document.getElementById('mensaje').textContent = 'Ingrese un código válido.';
@@ -829,6 +872,8 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
       const url2 = 'https://script.google.com/macros/s/AKfycbw-x_4ybQCSbxxboO4mkZztuUY3wp035ZYL_I56v6tbC2LnCw8lojACyEBlsZAWr7lqNA/exec';
       let enviados = 0;
       async function enviarConRetraso() {
+        // Usar el nombre del primer registro para el mensaje de agradecimiento
+        const nombreParaAgradecimiento = (registros.length > 0 && registros[0].nombre) ? registros[0].nombre : 'usuario';
         for (let i = 0; i < registros.length; i++) {
           let registroEnviar = { ...registros[i] };
           if (!registroEnviar.fecha || !registroEnviar.hora) {
@@ -858,13 +903,20 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
           await new Promise(res => setTimeout(res, 1000));
         }
         document.getElementById('mensaje').textContent = 'Registros enviados (' + enviados + ').';
-        // Mostrar mensaje de agradecimiento después de enviar
-        const nombre = (document.getElementById('registroForm').nombre.value || 'usuario');
-        document.getElementById('agradecimiento').textContent = '¡Gracias, ' + nombre + ', por tu colaboración!';
+        // Mostrar mensaje de agradecimiento después de enviar usando el nombre del primer registro
+        document.getElementById('agradecimiento').textContent = '¡Gracias, ' + nombreParaAgradecimiento + ', por tu colaboración!';
         // Limpiar registros locales y la tabla tras el envío
         registros.length = 0;
         const tbody = document.querySelector('#tablaRegistros tbody');
         tbody.innerHTML = '';
+        // Limpiar campos Área, Código, Producto y Cilindros
+        const form = document.getElementById('registroForm');
+        form.area.value = '';
+        form.codigo.value = '';
+        form.producto.value = '';
+        form.cilindros.value = '';
+        // Posicionar el cursor en el campo Nombre para evitar bucles de validación
+        setTimeout(() => form.nombre.focus(), 0);
       }
       enviarConRetraso();
     });
@@ -905,22 +957,16 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
 
     document.getElementById('btnLimpiar').addEventListener('click', function() {
       const form = document.getElementById('registroForm');
-      // Limpiar todos los campos
-      form.nombre.value = '';
-      form.area.value = '';
-      form.codigo.value = '';
-      form.producto.value = '';
-      form.cilindros.value = '';
-      // Deshabilitar campos dependientes
-      document.getElementById('codigoInput').disabled = true;
-      document.getElementById('productoInput').disabled = true;
-      document.querySelector('input[name="cilindros"]').disabled = true;
-      // Posicionar el foco en el campo nombre
-      form.nombre.focus();
-      document.getElementById('mensaje').textContent = '';
+      // Limpiar solo los campos del formulario
+      Array.from(form.elements).forEach(el => {
+        if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'number')) {
+          el.value = '';
+        }
+      });
+      // Borrar mensaje de agradecimiento
       document.getElementById('agradecimiento').textContent = '';
-      document.querySelector('button[type="submit"]').textContent = 'Registrar';
-      editandoIndice = null;
+      // Posicionar el foco en el campo nombre
+      setTimeout(() => form.nombre.focus(), 0);
     });
 
 function agregarFilaTabla(data) {
