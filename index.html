@@ -312,7 +312,13 @@
     nombreInput.addEventListener('blur', function(e) {
       if (!listaNombres.includes(nombreInput.value.trim())) {
         document.getElementById('mensaje').textContent = 'Ingrese un nombre válido de la lista.';
-        setTimeout(() => nombreInput.focus(), 0);
+        // Evitar bucle de foco si el usuario va a Área
+        setTimeout(() => {
+          const active = document.activeElement;
+          if (active !== areaInput) {
+            nombreInput.focus();
+          }
+        }, 0);
       } else {
         document.getElementById('mensaje').textContent = '';
       }
@@ -926,10 +932,10 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
         document.getElementById('mensaje').textContent = 'No hay registros para descargar.';
         return;
       }
-      // Convertir registros a CSV
+      // Convertir registros a CSV usando coma como separador y agregando BOM UTF-8
       const csvRows = [];
       // Encabezados
-      csvRows.push(['ID', 'Fecha', 'Nombre', 'Área', 'Código', 'Producto', 'Cilindros'].join(';'));
+      csvRows.push(['ID', 'Fecha', 'Nombre', 'Área', 'Código', 'Producto', 'Cilindros'].join(','));
       // Datos
       registros.forEach((reg, index) => {
         csvRows.push([
@@ -940,9 +946,11 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
           reg.codigo,
           reg.producto,
           reg.cilindros
-        ].join(';'));
+        ].map(val => typeof val === 'string' ? '"' + val.replace(/"/g, '""') + '"' : val).join(','));
       });
-      const csvString = csvRows.join('\n');
+      // Agregar BOM UTF-8 para que Excel reconozca la codificación y los acentos
+      const BOM = '\uFEFF';
+      const csvString = BOM + csvRows.join('\r\n');
       const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
