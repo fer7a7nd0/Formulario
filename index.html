@@ -978,56 +978,78 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
       setTimeout(() => form.nombre.focus(), 0);
     });
 
-function agregarFilaTabla(data) {
-  const tbody = document.querySelector('#tablaRegistros tbody');
-  const fila = document.createElement('tr');
-  const id = tbody.children.length + 1;
-  fila.innerHTML = `
-    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${id}</td>
-    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.codigo}</td>
-    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.producto}</td>
-    <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.cilindros}</td>
-    <td style="padding:6px 2px;border-bottom:1px solid #f0f0f0; text-align:center; white-space:nowrap;">
-      <button type="button" class="btnEditar" title="Editar" style="background:#f59e42;color:#fff;border:none;padding:2px 7px;font-size:0.92em;border-radius:3px;cursor:pointer;margin-right:3px;">✏️</button>
-      <button type="button" class="btnEliminar" title="Eliminar" style="background:#ef4444;color:#fff;border:none;padding:2px 7px;font-size:0.92em;border-radius:3px;cursor:pointer;">🗑️</button>
-    </td>
-  `;
-  // Botón Eliminar
-  fila.querySelector('.btnEliminar').addEventListener('click', function() {
-    const rowIndex = Array.from(tbody.children).indexOf(fila);
-    if (rowIndex > -1) {
-      registros.splice(rowIndex, 1);
-      fila.remove();
-      document.getElementById('mensaje').textContent = 'Registro eliminado.';
-      // Recalcular IDs
-      Array.from(tbody.children).forEach((tr, idx) => {
-        tr.children[0].textContent = idx + 1;
-      });
-    }
-  });
-  // Botón Editar
-  fila.querySelector('.btnEditar').addEventListener('click', function() {
-    const rowIndex = Array.from(tbody.children).indexOf(fila);
-    if (rowIndex > -1) {
-      const reg = registros[rowIndex];
-      const form = document.getElementById('registroForm');
-      form.nombre.value = reg.nombre;
-      form.area.value = reg.area;
-      // Disparar el evento para habilitar campos
-      form.area.dispatchEvent(new Event('change'));
-      setTimeout(() => {
-        form.codigo.value = reg.codigo;
-        form.codigo.dispatchEvent(new Event('input'));
-        form.producto.value = reg.producto;
-        form.cilindros.value = reg.cilindros;
-      }, 10);
-      editandoIndice = rowIndex;
-      document.querySelector('button[type="submit"]').textContent = 'Actualizar';
-      document.getElementById('mensaje').textContent = 'Editando registro. Modifique y presione Actualizar.';
-    }
-  });
-  tbody.appendChild(fila);
+// Guardar registros en localStorage
+function guardarRegistrosEnLocalStorage() {
+  localStorage.setItem('registros', JSON.stringify(registros));
 }
+
+// Cargar registros desde localStorage
+function cargarRegistrosDesdeLocalStorage() {
+  const registrosGuardados = localStorage.getItem('registros');
+  if (registrosGuardados) {
+    const registrosCargados = JSON.parse(registrosGuardados);
+    registrosCargados.forEach(registro => {
+      registros.push(registro);
+      agregarFilaTabla(registro);
+    });
+  }
+}
+
+// Llamar a cargar registros al inicio
+document.addEventListener('DOMContentLoaded', function() {
+  cargarRegistrosDesdeLocalStorage();
+});
+
+    function agregarFilaTabla(data) {
+      const tbody = document.querySelector('#tablaRegistros tbody');
+      const fila = document.createElement('tr');
+      const id = tbody.children.length + 1;
+      fila.innerHTML = `
+        <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${id}</td>
+        <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.codigo}</td>
+        <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.producto}</td>
+        <td style="padding:6px 4px;border-bottom:1px solid #f0f0f0;">${data.cilindros}</td>
+        <td style="padding:6px 2px;border-bottom:1px solid #f0f0f0; text-align:center; white-space:nowrap;">
+          <button type="button" class="btnEditar" title="Editar" style="background:#f59e42;color:#fff;border:none;padding:2px 7px;font-size:0.92em;border-radius:3px;cursor:pointer;margin-right:3px;">✏️</button>
+          <button type="button" class="btnEliminar" title="Eliminar" style="background:#ef4444;color:#fff;border:none;padding:2px 7px;font-size:0.92em;border-radius:3px;cursor:pointer;">🗑️</button>
+        </td>
+      `;
+      // Botón Eliminar
+      fila.querySelector('.btnEliminar').addEventListener('click', function() {
+        const rowIndex = Array.from(tbody.children).indexOf(fila);
+        if (rowIndex > -1) {
+          registros.splice(rowIndex, 1);
+          fila.remove();
+          document.getElementById('mensaje').textContent = 'Registro eliminado.';
+          // Recalcular IDs
+          Array.from(tbody.children).forEach((tr, idx) => {
+            tr.children[0].textContent = idx + 1;
+          });
+        }
+      });
+      // Botón Editar
+      fila.querySelector('.btnEditar').addEventListener('click', function() {
+        const rowIndex = Array.from(tbody.children).indexOf(fila);
+        if (rowIndex > -1) {
+          const reg = registros[rowIndex];
+          const form = document.getElementById('registroForm');
+          form.nombre.value = reg.nombre;
+          form.area.value = reg.area;
+          // Disparar el evento para habilitar campos
+          form.area.dispatchEvent(new Event('change'));
+          setTimeout(() => {
+            form.codigo.value = reg.codigo;
+            form.codigo.dispatchEvent(new Event('input'));
+            form.producto.value = reg.producto;
+            form.cilindros.value = reg.cilindros;
+          }, 10);
+          editandoIndice = rowIndex;
+          document.querySelector('button[type="submit"]').textContent = 'Actualizar';
+          document.getElementById('mensaje').textContent = 'Editando registro. Modifique y presione Actualizar.';
+        }
+      });
+      tbody.appendChild(fila);
+    }
   </script>
 </body>
 </html>
